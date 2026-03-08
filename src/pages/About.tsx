@@ -60,7 +60,7 @@ export default function About() {
 
       // Manifesto Scrub Animation
       const manifestoWords = gsap.utils.toArray('.manifesto-word');
-      gsap.fromTo(manifestoWords, 
+      gsap.fromTo(manifestoWords,
         { opacity: 0.2 },
         {
           opacity: 1,
@@ -108,15 +108,15 @@ export default function About() {
 
   return (
     <div ref={containerRef} className="w-full overflow-hidden">
-      
+
       {/* HERO SECTION */}
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-32 pb-16 px-4 md:px-8">
         <div className="absolute top-32 left-8 font-mono text-xs font-bold uppercase tracking-widest opacity-50 hidden md:block">
-          SYS.INFO // ABOUT_US<br/>
+          SYS.INFO // ABOUT_US<br />
           VERSION: 2.0.4
         </div>
         <div className="absolute bottom-16 right-8 font-mono text-xs font-bold uppercase tracking-widest opacity-50 text-right hidden md:block">
-          GULIR UNTUK MEMULAI<br/>
+          GULIR UNTUK MEMULAI<br />
           ↓
         </div>
 
@@ -125,10 +125,10 @@ export default function About() {
             <span key={i} className="hero-char inline-block">{char}</span>
           ))}
         </h1>
-        
-        <div className="mt-12 md:mt-24 max-w-2xl text-center">
-          <p className="text-xl md:text-3xl font-medium leading-tight">
-            Bukan cuma agensi. Bukan cuma komunitas. Kita ini <span className="font-black bg-black text-white px-2">OURCODE</span>.
+
+        <div className="mt-12 md:mt-24 max-w-2xl text-center px-4">
+          <p className="text-xl md:text-3xl font-medium leading-[1.3] text-[#1A1A1A] dark:text-[#F5F5F0]">
+            Bukan cuma sekumpulan kode. Ini adalah <span className="font-black bg-black text-white px-2">PLATFORM</span> tempat ide gila OurCreativity jadi nyata lewat barisan logika.
           </p>
         </div>
       </section>
@@ -150,17 +150,17 @@ export default function About() {
       {/* STICKY INTERACTIVE SECTION */}
       <section ref={stickyRef} className="w-full relative px-4 md:px-16 py-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 relative">
-          
+
           {/* Left: Sticky Content (Images) */}
           <div className="lg:col-span-5 hidden lg:block relative h-full">
             <div className="sticky-content w-full aspect-[3/4] border-8 border-black dark:border-white/20 bg-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] dark:shadow-[16px_16px_0px_0px_rgba(255,255,255,0.2)] overflow-hidden relative">
               {VALUES.map((val, idx) => (
-                <div 
+                <div
                   key={val.id}
                   className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${activeValue === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
-                  <img 
-                    src={val.image} 
+                  <img
+                    src={val.image}
                     alt={val.title}
                     className="w-full h-full object-cover grayscale opacity-80 mix-blend-luminosity"
                   />
@@ -170,7 +170,7 @@ export default function About() {
                   </div>
                 </div>
               ))}
-              
+
               {/* Overlay Grain */}
               <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
             </div>
@@ -181,10 +181,10 @@ export default function About() {
             <div className="font-mono text-black dark:text-[#F5F5F0] mb-12 font-bold tracking-widest uppercase text-sm md:text-base border-b-4 border-black dark:border-white/20 pb-4 inline-block">
               [02] CARA KERJA KITA
             </div>
-            
+
             <div className="flex flex-col gap-8 md:gap-12">
               {VALUES.map((val, idx) => (
-                <div 
+                <div
                   key={val.id}
                   onMouseEnter={() => handleValueHover(idx)}
                   className={`group cursor-pointer border-l-8 pl-6 md:pl-10 py-4 transition-all duration-300 ${activeValue === idx ? 'border-emerald-600 dark:border-emerald-500' : 'border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30'}`}
@@ -200,7 +200,7 @@ export default function About() {
                   <p className={`text-lg md:text-2xl font-medium leading-relaxed transition-all duration-500 overflow-hidden text-[#1A1A1A] dark:text-[#F5F5F0]/80 ${activeValue === idx ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
                     {val.desc}
                   </p>
-                  
+
                   {/* Mobile Image Fallback */}
                   <div className={`lg:hidden mt-6 border-4 border-black dark:border-white/20 overflow-hidden transition-all duration-500 ${activeValue === idx ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 border-0'}`}>
                     <img src={val.image} alt={val.title} className="w-full h-48 object-cover grayscale" />
@@ -215,13 +215,13 @@ export default function About() {
 
       {/* MASSIVE PARALLAX IMAGE SECTION */}
       <section className="w-full h-[60vh] md:h-[90vh] overflow-hidden relative border-y-8 border-black dark:border-white/10 parallax-container">
-        <img 
-          src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2000&auto=format&fit=crop" 
-          alt="Our Workspace" 
+        <img
+          src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2000&auto=format&fit=crop"
+          alt="Our Workspace"
           className="parallax-img absolute top-[-30%] left-0 w-full h-[160%] object-cover grayscale"
         />
         <div className="absolute inset-0 bg-black/40"></div>
-        
+
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <h2 className="font-black text-[12vw] text-white tracking-tighter uppercase mix-blend-overlay opacity-80">
             GAS TERUS
@@ -233,20 +233,20 @@ export default function About() {
       <section className="w-full py-32 px-4 md:px-16 bg-white dark:bg-[#0A0A0A] text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-black text-5xl md:text-7xl tracking-tighter uppercase mb-8 text-[#1A1A1A] dark:text-[#F5F5F0]">
-            SIAP BIKIN<br/>YANG KEREN?
+            SIAP BIKIN<br />YANG KEREN?
           </h2>
           <p className="text-xl md:text-2xl font-medium mb-12 opacity-80 text-[#1A1A1A] dark:text-[#F5F5F0]">
             Yuk gabung di proyek open-source kita, atau mari kolaborasi buat proyek kamu selanjutnya.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link 
+            <Link
               to="/projects"
               onClick={() => haptics.trigger('nudge')}
               className="w-full sm:w-auto flex items-center justify-center gap-3 text-lg font-black uppercase tracking-widest border-4 border-black dark:border-white/20 bg-emerald-500 text-black px-8 py-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[10px_10px_0px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 hover:-translate-x-1 transition-all"
             >
               LIHAT KARYA KITA
             </Link>
-            <Link 
+            <Link
               to="/contact"
               onClick={() => haptics.trigger(50)}
               className="w-full sm:w-auto flex items-center justify-center gap-3 text-lg font-black uppercase tracking-widest border-4 border-black dark:border-white/20 bg-transparent text-black dark:text-[#F5F5F0] px-8 py-4 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-colors"

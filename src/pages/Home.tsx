@@ -183,10 +183,10 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-8 justify-center">
             <p className="about-text text-xl md:text-3xl font-medium leading-tight text-[#1A1A1A] dark:text-[#F5F5F0]">
-              OurCode itu divisi teknologinya OurCreativity. Kita percaya kalau kode yang bagus itu seni yang bisa mecahin masalah.
+              OurCode itu platform ekosistem untuk semua projek OurCreativity. Kita percaya kalau kode yang bagus itu bukan cuma soal logika, tapi soal dampak nyata.
             </p>
             <p className="about-text text-base md:text-lg opacity-70 leading-relaxed font-mono text-[#1A1A1A] dark:text-[#F5F5F0]">
-              Dari sistem desa sampai API yang ribet, kita bangun infrastruktur digital yang kuat dan open-source (kebanyakan sih gitu). Kita nggak pelit ilmu, kita bagi-bagi.
+              Dari aplikasi komunitas sampai infrastruktur digital yang solid, kita bangun tempat di mana ide-ide OurCreativity jadi nyata lewat kode. Kita bikin standar, kita bangun masa depan bareng-bareng.
             </p>
             <div className="about-text mt-4">
               <Link
