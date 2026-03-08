@@ -114,11 +114,7 @@ export default function Home() {
         <div className="absolute bottom-1/4 left-[10%] w-40 h-40 md:w-80 md:h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-[50px] md:blur-[100px] opacity-40 float-shape z-0"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <div className="flex flex-col items-start">
-            <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 border-2 border-black dark:border-white/20 bg-white dark:bg-[#1A1A1A] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] mb-8 md:mb-12">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="font-mono text-xs md:text-sm font-bold uppercase tracking-widest text-[#1A1A1A] dark:text-[#F5F5F0]">Divisi Kode OurCreativity</span>
-            </div>
+          <div className="flex flex-col items-start pt-12">
 
             <div className="overflow-hidden">
               <h1 className="hero-title-line font-black text-[15vw] md:text-[12vw] leading-[0.85] tracking-tighter uppercase text-[#1A1A1A] dark:text-[#F5F5F0]">

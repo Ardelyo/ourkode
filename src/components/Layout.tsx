@@ -3,13 +3,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import { Menu, X } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { haptics } from '../utils/haptics';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuItemsRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLAnchorElement>(null);
 
   const navItems = [
     { path: '/', label: 'BERANDA' },
@@ -32,10 +36,41 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileMenuOpen]);
 
-  // Close menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hide logo on scroll down, show on scroll up
+      ScrollTrigger.create({
+        start: 'top -50',
+        onUpdate: (self) => {
+          if (self.direction === 1) {
+            // Scrolling down
+            gsap.to(logoRef.current, {
+              y: -100,
+              opacity: 0,
+              duration: 0.4,
+              ease: 'power2.inOut',
+              pointerEvents: 'none'
+            });
+          } else {
+            // Scrolling up
+            gsap.to(logoRef.current, {
+              y: 0,
+              opacity: 1,
+              duration: 0.4,
+              ease: 'power2.out',
+              pointerEvents: 'auto'
+            });
+          }
+        }
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   const handleNavClick = () => {
     haptics.trigger(50);
@@ -50,12 +85,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full relative font-sans overflow-hidden selection:bg-emerald-500 selection:text-white">
       {/* Grid Background */}
-      <div className="fixed inset-0 pointer-events-none z-[-1] opacity-50 dark:opacity-10" 
-           style={{ 
-             backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px)',
-             backgroundSize: '8vw 100%',
-             backgroundPosition: 'center'
-           }}>
+      <div className="fixed inset-0 pointer-events-none z-[-1] opacity-50 dark:opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px)',
+          backgroundSize: '8vw 100%',
+          backgroundPosition: 'center'
+        }}>
       </div>
 
       {/* Crosshairs */}
@@ -73,8 +108,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
+      {/* Brand Logo - Top Left */}
+      <Link
+        ref={logoRef}
+        to="/"
+        onClick={() => haptics.trigger('nudge')}
+        className="fixed top-6 left-6 z-[60] flex items-center gap-3 bg-white dark:bg-[#1A1A1A] border-2 border-black dark:border-white/20 p-2 md:px-3 md:py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all group"
+      >
+        <img src="/logo.webp" alt="OurCreativity" className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
+        <div className="hidden md:flex flex-col text-[#1A1A1A] dark:text-[#F5F5F0]">
+          <span className="font-black text-sm tracking-tighter leading-none uppercase">OurCreativity</span>
+          <span className="font-mono text-[9px] tracking-widest opacity-70 uppercase mt-1">Edisi Koding</span>
+        </div>
+      </Link>
+
       {/* Mobile Menu Toggle Button */}
-      <button 
+      <button
         onClick={toggleMenu}
         className="md:hidden fixed top-6 right-6 z-[60] bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F0] border-2 border-black dark:border-white/20 p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
       >
@@ -82,26 +131,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </button>
 
       {/* Mobile Fullscreen Menu */}
-      <div 
+      <div
         ref={menuRef}
         className={cn(
           "fixed inset-0 bg-[#E4E4E2] dark:bg-[#050505] z-[55] flex flex-col justify-center items-center md:hidden transition-transform duration-500 ease-in-out",
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}
       >
-        <div className="absolute inset-0 pointer-events-none z-0 opacity-50 dark:opacity-10" 
-             style={{ 
-               backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px)',
-               backgroundSize: '16vw 100%',
-               backgroundPosition: 'center'
-             }}>
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-50 dark:opacity-10"
+          style={{
+            backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px)',
+            backgroundSize: '16vw 100%',
+            backgroundPosition: 'center'
+          }}>
         </div>
         <div ref={menuItemsRef} className="flex flex-col gap-8 text-center relative z-10 w-full px-8">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path || 
-                             (item.path !== '/' && location.pathname.startsWith(item.path));
+            const isActive = location.pathname === item.path ||
+              (item.path !== '/' && location.pathname.startsWith(item.path));
             return (
-              <Link 
+              <Link
                 key={item.path}
                 to={item.path}
                 onClick={handleNavClick}
@@ -121,10 +170,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="hidden md:block fixed bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
         <div className="flex bg-[#1A1A1A] dark:bg-[#F5F5F0] text-white dark:text-[#1A1A1A] text-[9px] md:text-[10px] font-mono uppercase tracking-widest rounded-[2px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] overflow-hidden border-2 border-black dark:border-white/20 backdrop-blur-md">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path || 
-                             (item.path !== '/' && location.pathname.startsWith(item.path));
+            const isActive = location.pathname === item.path ||
+              (item.path !== '/' && location.pathname.startsWith(item.path));
             return (
-              <Link 
+              <Link
                 key={item.path}
                 to={item.path}
                 onClick={handleNavClick}
