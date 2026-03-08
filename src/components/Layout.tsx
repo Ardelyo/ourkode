@@ -85,7 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full relative font-sans overflow-hidden selection:bg-emerald-500 selection:text-white">
       {/* Grid Background */}
-      <div className="fixed inset-0 pointer-events-none z-[-1] opacity-50 dark:opacity-10"
+      <div className="fixed inset-0 pointer-events-none z-[-1] opacity-[0.05] dark:opacity-[0.03]"
         style={{
           backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px)',
           backgroundSize: '8vw 100%',
@@ -94,11 +94,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Crosshairs */}
-      <div className="fixed top-[30%] left-[20%] w-4 h-4 pointer-events-none opacity-30 dark:opacity-20 z-[-1] hidden md:block">
+      <div className="fixed top-[30%] left-[20%] w-4 h-4 pointer-events-none opacity-[0.1] z-[-1] hidden md:block">
         <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-current -translate-y-1/2"></div>
         <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-current -translate-x-1/2"></div>
       </div>
-      <div className="fixed bottom-[40%] right-[25%] w-6 h-6 pointer-events-none opacity-30 dark:opacity-20 z-[-1] hidden md:block">
+      <div className="fixed bottom-[40%] right-[25%] w-6 h-6 pointer-events-none opacity-[0.1] z-[-1] hidden md:block">
         <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-current -translate-y-1/2"></div>
         <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-current -translate-x-1/2"></div>
       </div>

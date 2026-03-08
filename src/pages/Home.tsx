@@ -102,7 +102,7 @@ export default function Home() {
       {/* HERO SECTION */}
       <section ref={heroRef} className="relative w-full min-h-screen flex flex-col justify-center px-4 md:px-16 pt-20 overflow-hidden">
         {/* Background Grid */}
-        <div className="absolute inset-0 pointer-events-none z-0 opacity-50 dark:opacity-20"
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.1] dark:opacity-[0.05]"
           style={{
             backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
             backgroundSize: '4vw 4vw',
