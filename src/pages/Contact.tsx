@@ -1,10 +1,36 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { ArrowRight, MessageCircle, Instagram, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, MessageCircle, Instagram, ArrowUpRight, Check, Loader, Code2 } from 'lucide-react';
 import { haptics } from '../utils/haptics';
 
 export default function Contact() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    haptics.trigger('nudge');
+    setFormState('loading');
+
+    try {
+      // --- SUPABASE IMPLEMENTATION (activate when Supabase is connected) ---
+      // const { error } = await supabase.from('contact_submissions').insert({
+      //   name: formData.name,
+      //   email: formData.email,
+      //   message: formData.message,
+      // });
+      // if (error) throw error;
+
+      // Simulate a network request for now
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      setFormState('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      console.error('Failed to submit contact form:', err);
+      setFormState('error');
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,12 +77,12 @@ export default function Contact() {
 
   return (
     <div ref={containerRef} className="w-full min-h-screen pt-32 pb-48 px-4 md:px-8 lg:px-16 overflow-hidden selection:bg-emerald-500 selection:text-black">
-      
+
       {/* Background Noise */}
       <div className="fixed inset-0 opacity-10 dark:opacity-[0.03] pointer-events-none mix-blend-screen z-50" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
-        
+
         {/* Left Side: Massive Typography & Socials */}
         <div className="lg:col-span-5 flex flex-col justify-center pt-12">
           <div className="font-mono text-emerald-500 mb-8 font-bold tracking-widest uppercase text-sm flex items-center gap-4">
@@ -80,8 +106,10 @@ export default function Contact() {
 
           {/* Social Links / Community */}
           <div className="flex flex-col gap-4 mt-8">
-            <a 
-              href="#" 
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfMjeDv5PiKi97U9UaN-UmuhJLeJySpPDBDJET7xlKyVu_ZqA/viewform?pli=1"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => haptics.trigger(50)}
               className="social-card group relative flex items-center justify-between p-6 border border-black/10 dark:border-white/10 bg-white dark:bg-[#111] hover:bg-emerald-100 dark:hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-colors duration-500 overflow-hidden"
             >
@@ -91,15 +119,15 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-black text-xl uppercase tracking-tighter group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">Grup WhatsApp</h3>
-                  <p className="font-mono text-xs opacity-60 uppercase tracking-widest mt-1">Join Komunitas Kita</p>
+                  <p className="font-mono text-xs opacity-60 uppercase tracking-widest mt-1">Form Registrasi Komunitas</p>
                 </div>
               </div>
               <ArrowUpRight size={28} className="relative z-10 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-all duration-500 group-hover:rotate-45" />
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-600/0 via-emerald-600/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
             </a>
 
-            <a 
-              href="https://instagram.com/ourcreativity.ofc" 
+            <a
+              href="https://discord.gg/PvRSUHVaa9"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => haptics.trigger(50)}
@@ -107,18 +135,19 @@ export default function Contact() {
             >
               <div className="flex items-center gap-6 relative z-10">
                 <div className="w-12 h-12 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-colors duration-500">
-                  <Instagram size={24} />
+                  <Code2 size={24} />
                 </div>
                 <div>
-                  <h3 className="font-black text-xl uppercase tracking-tighter group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">@ourcreativity.ofc</h3>
-                  <p className="font-mono text-xs opacity-60 uppercase tracking-widest mt-1">Instagram Resmi</p>
+                  <h3 className="font-black text-xl uppercase tracking-tighter group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">Discord Hub</h3>
+                  <p className="font-mono text-xs opacity-60 uppercase tracking-widest mt-1">Pusat Diskusi Teknis</p>
                 </div>
               </div>
               <ArrowUpRight size={28} className="relative z-10 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-all duration-500 group-hover:rotate-45" />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-600/0 via-emerald-600/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
             </a>
 
-            <a 
-              href="https://instagram.com/oc.koding" 
+            <a
+              href="https://instagram.com/oc.koding"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => haptics.trigger(50)}
@@ -134,6 +163,7 @@ export default function Contact() {
                 </div>
               </div>
               <ArrowUpRight size={28} className="relative z-10 opacity-40 group-hover:opacity-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-all duration-500 group-hover:rotate-45" />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-emerald-600/0 via-emerald-600/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
             </a>
           </div>
         </div>
@@ -147,59 +177,75 @@ export default function Contact() {
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-emerald-500/50"></div>
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-emerald-500/50"></div>
 
-            <form className="w-full flex flex-col gap-12" onSubmit={(e) => { e.preventDefault(); haptics.trigger('nudge'); }}>
+            <form className="w-full flex flex-col gap-12" onSubmit={handleSubmit}>
               <div className="form-element relative">
-                <input 
-                  type="text" 
-                  id="name" 
+                <input
+                  type="text"
+                  id="name"
                   placeholder=" "
-                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none"
+                  value={formData.name}
+                  onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
+                  required
+                  disabled={formState === 'loading' || formState === 'success'}
+                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none disabled:opacity-50"
                 />
-                <label 
-                  htmlFor="name" 
-                  className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
-                >
+                <label htmlFor="name" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   NAMA KAMU
                 </label>
               </div>
 
               <div className="form-element relative">
-                <input 
-                  type="email" 
-                  id="email" 
+                <input
+                  type="email"
+                  id="email"
                   placeholder=" "
-                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none"
+                  value={formData.email}
+                  onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+                  required
+                  disabled={formState === 'loading' || formState === 'success'}
+                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none disabled:opacity-50"
                 />
-                <label 
-                  htmlFor="email" 
-                  className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
-                >
+                <label htmlFor="email" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   EMAIL KAMU
                 </label>
               </div>
 
               <div className="form-element relative">
-                <textarea 
-                  id="message" 
+                <textarea
+                  id="message"
                   rows={4}
                   placeholder=" "
-                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer resize-none rounded-none"
+                  value={formData.message}
+                  onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                  required
+                  disabled={formState === 'loading' || formState === 'success'}
+                  className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer resize-none rounded-none disabled:opacity-50"
                 ></textarea>
-                <label 
-                  htmlFor="message" 
-                  className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
-                >
+                <label htmlFor="message" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   PESAN / IDE PROYEK
                 </label>
               </div>
 
-              <button 
+              {formState === 'error' && (
+                <p className="font-mono text-sm text-red-500 uppercase tracking-widest -mt-6">Gagal kirim. Coba lagi ya!</p>
+              )}
+
+              {formState === 'success' && (
+                <p className="font-mono text-sm text-emerald-500 uppercase tracking-widest -mt-6">Pesan terkirim! Kita akan balas segera.</p>
+              )}
+
+              <button
                 type="submit"
-                onClick={() => haptics.trigger(50)}
-                className="form-element self-start flex items-center gap-4 text-lg font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-8 py-4 hover:bg-emerald-500 hover:text-black transition-colors duration-300 group mt-8 relative overflow-hidden"
+                disabled={formState === 'loading' || formState === 'success'}
+                className="form-element self-start flex items-center gap-4 text-lg font-black uppercase tracking-widest bg-black text-white dark:bg-white dark:text-black px-8 py-4 hover:bg-emerald-500 hover:text-black transition-colors duration-300 group mt-8 relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
               >
-                <span className="relative z-10">KIRIM PESAN</span>
-                <ArrowRight size={24} strokeWidth={3} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300" />
+                {formState === 'loading' ? (
+                  <><Loader size={20} className="animate-spin" /> KIRIM...</>
+                ) : formState === 'success' ? (
+                  <><Check size={20} /> TERKIRIM!</>
+                ) : (
+                  <><span className="relative z-10">KIRIM PESAN</span><ArrowRight size={24} strokeWidth={3} className="relative z-10 group-hover:translate-x-2 transition-transform duration-300" /></>
+                )}
               </button>
             </form>
           </div>

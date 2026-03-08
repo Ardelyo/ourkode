@@ -5,26 +5,38 @@ import { ArrowUpRight, Search, Plus, X, ArrowRight } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { haptics } from '../utils/haptics';
 
-const PROJECTS = [
-  { id: '01', title: 'SISTEM DESA', category: 'SUMBER TERBUKA', year: '2025', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop' },
-  { id: '02', title: 'OURCREATIVITY HUB', category: 'INTERNAL', year: '2024', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop' },
-  { id: '03', title: 'NEXUS API', category: 'SUMBER TERTUTUP', year: '2026', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop' },
-  { id: '04', title: 'E-LEARNING PLATFORM', category: 'SUMBER TERBUKA', year: '2025', image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=600&auto=format&fit=crop' },
-  { id: '05', title: 'FINTECH DASHBOARD', category: 'KLIEN', year: '2024', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop' },
-];
+import { Project } from '../types/project';
+import { getProjects } from '../services/projectService';
 
 export default function Projects() {
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const imageRevealRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  
+
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredProjects = PROJECTS.filter(p => 
-    p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (error) {
+        console.error("Failed to load projects:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  const filteredProjects = projects.filter(p =>
+    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -36,7 +48,7 @@ export default function Projects() {
         duration: 1,
         ease: 'power4.out',
       });
-      
+
       gsap.from('.project-item', {
         y: 50,
         opacity: 0,
@@ -134,15 +146,15 @@ export default function Projects() {
         <div className="page-title flex flex-col md:flex-row gap-6 md:gap-12 mb-16 items-end border-b-4 border-black dark:border-white/20 pb-6">
           <div className="flex-1 w-full relative group flex items-center">
             <Search className="absolute left-0 text-black/40 dark:text-white/40 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors" size={32} strokeWidth={3} />
-            <input 
-              type="text" 
-              placeholder="CARI PROYEK..." 
+            <input
+              type="text"
+              placeholder="CARI PROYEK..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent pl-12 py-2 text-3xl md:text-5xl font-black uppercase tracking-tighter focus:outline-none placeholder-black/20 dark:placeholder-white/20 text-[#1A1A1A] dark:text-[#F5F5F0]"
             />
           </div>
-          <button 
+          <button
             onClick={() => {
               haptics.trigger('nudge');
               setIsModalOpen(true);
@@ -157,9 +169,14 @@ export default function Projects() {
         </div>
 
         <ul ref={listRef} className="w-full">
-          {filteredProjects.length > 0 ? filteredProjects.map((project) => (
+          {isLoading ? (
+            <li className="py-12 text-center font-mono text-sm uppercase tracking-widest opacity-50 flex flex-col items-center justify-center gap-4">
+              <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+              Memuat data proyek...
+            </li>
+          ) : filteredProjects.length > 0 ? filteredProjects.map((project) => (
             <li key={project.id} className="project-item border-b-2 border-black dark:border-white/20 group">
-              <Link 
+              <Link
                 to={`/project/${project.id}`}
                 onClick={() => haptics.trigger(50)}
                 className="block py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden"
@@ -168,7 +185,7 @@ export default function Projects() {
               >
                 {/* Background hover effect */}
                 <div className="absolute inset-0 bg-[#1A1A1A] dark:bg-emerald-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0"></div>
-                
+
                 <div className="flex items-center gap-8 md:gap-16 z-10">
                   <span className="font-mono text-lg md:text-2xl font-bold opacity-40 group-hover:text-emerald-500 dark:group-hover:text-emerald-300 transition-colors duration-300">
                     {project.id}
@@ -177,7 +194,7 @@ export default function Projects() {
                     {project.title}
                   </h2>
                 </div>
-                
+
                 <div className="flex items-center gap-8 md:gap-16 z-10 ml-16 md:ml-0">
                   <div className="flex flex-col items-start md:items-end">
                     <span className="font-mono text-xs uppercase tracking-widest opacity-60 group-hover:text-white/60 transition-colors duration-300">Kategori</span>
@@ -202,14 +219,14 @@ export default function Projects() {
       </div>
 
       {/* Floating Image Reveal (Desktop Only) */}
-      <div 
+      <div
         ref={imageRevealRef}
         className="fixed top-0 left-0 w-[400px] h-[300px] pointer-events-none z-50 overflow-hidden scale-80 opacity-0 hidden md:block shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] dark:shadow-[16px_16px_0px_0px_rgba(255,255,255,0.2)] border-4 border-black dark:border-white/20 bg-white dark:bg-[#1A1A1A]"
       >
-        <img 
+        <img
           ref={imageRef}
-          src={hoveredImage || PROJECTS[0].image} 
-          alt="Project Preview" 
+          src={hoveredImage || (projects.length > 0 ? projects[0].image : '')}
+          alt="Project Preview"
           className="w-full h-full object-cover scale-125 grayscale group-hover:grayscale-0"
         />
         <div className="absolute inset-0 bg-emerald-600/20 mix-blend-multiply"></div>
@@ -218,12 +235,12 @@ export default function Projects() {
       {/* Submit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer" 
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
             onClick={() => setIsModalOpen(false)}
           ></div>
           <div className="bg-[#E4E4E2] dark:bg-[#0A0A0A] w-full max-w-2xl p-8 md:p-12 relative z-10 shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] dark:shadow-[16px_16px_0px_0px_rgba(255,255,255,0.2)] border-4 border-black dark:border-white/20 text-[#1A1A1A] dark:text-[#F5F5F0]">
-            <button 
+            <button
               onClick={() => {
                 haptics.trigger(50);
                 setIsModalOpen(false);
@@ -232,7 +249,7 @@ export default function Projects() {
             >
               <X size={24} strokeWidth={3} />
             </button>
-            
+
             <h2 className="font-black text-4xl md:text-5xl tracking-tighter uppercase mb-2">Submit Proyek</h2>
             <p className="font-mono text-xs uppercase tracking-widest opacity-60 mb-10 font-bold">
               Punya proyek keren? Kirim link repo atau sosmed kamu buat kita review dan tampilin.
@@ -240,15 +257,15 @@ export default function Projects() {
 
             <form className="flex flex-col gap-8" onSubmit={(e) => { e.preventDefault(); haptics.trigger('nudge'); setIsModalOpen(false); }}>
               <div className="relative group">
-                <input 
-                  type="text" 
-                  id="projectName" 
+                <input
+                  type="text"
+                  id="projectName"
                   placeholder=" "
                   required
                   className="w-full bg-transparent border-b-4 border-black dark:border-white/20 py-3 text-2xl font-black focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-400 transition-colors peer text-[#1A1A1A] dark:text-[#F5F5F0]"
                 />
-                <label 
-                  htmlFor="projectName" 
+                <label
+                  htmlFor="projectName"
                   className="absolute left-0 top-3 text-sm font-black opacity-40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
                 >
                   NAMA PROYEK
@@ -256,15 +273,15 @@ export default function Projects() {
               </div>
 
               <div className="relative group">
-                <input 
-                  type="url" 
-                  id="projectLink" 
+                <input
+                  type="url"
+                  id="projectLink"
                   placeholder=" "
                   required
                   className="w-full bg-transparent border-b-4 border-black dark:border-white/20 py-3 text-2xl font-black focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-400 transition-colors peer text-[#1A1A1A] dark:text-[#F5F5F0]"
                 />
-                <label 
-                  htmlFor="projectLink" 
+                <label
+                  htmlFor="projectLink"
                   className="absolute left-0 top-3 text-sm font-black opacity-40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
                 >
                   LINK REPOSITORY / SOSMED
@@ -272,14 +289,14 @@ export default function Projects() {
               </div>
 
               <div className="relative group">
-                <textarea 
-                  id="projectDesc" 
+                <textarea
+                  id="projectDesc"
                   rows={3}
                   placeholder=" "
                   className="w-full bg-transparent border-b-4 border-black dark:border-white/20 py-3 text-2xl font-black focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-400 transition-colors peer resize-none text-[#1A1A1A] dark:text-[#F5F5F0]"
                 ></textarea>
-                <label 
-                  htmlFor="projectDesc" 
+                <label
+                  htmlFor="projectDesc"
                   className="absolute left-0 top-3 text-sm font-black opacity-40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-600 dark:peer-focus:text-emerald-400 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none"
                 >
                   DESKRIPSI SINGKAT

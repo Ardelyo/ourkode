@@ -1,0 +1,291 @@
+[
+    {
+        "id": "01",
+        "title": "SISTEM DESA",
+        "category": "SUMBER TERBUKA",
+        "year": "2025",
+        "author": "Arif Rahman & Tim",
+        "version": "v2.4.0",
+        "license": "MIT",
+        "repository": "github.com/ourcreativity/sistem-desa",
+        "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2000&auto=format&fit=crop",
+        "summary": "Sistem Desa itu platform open-source komprehensif yang dibikin buat digitalisasi administrasi dan pelayanan publik di desa-desa seluruh Indonesia.",
+        "techStack": [
+            "React",
+            "TypeScript",
+            "Node.js",
+            "PostgreSQL",
+            "Tailwind CSS",
+            "Docker",
+            "Redis"
+        ],
+        "categories": [
+            "E-Government",
+            "Public Service",
+            "Web App",
+            "Monorepo",
+            "Civic Tech"
+        ],
+        "stats": {
+            "stars": "1.2k",
+            "forks": "340",
+            "contributors": "45",
+            "issues": "12 open"
+        },
+        "gallery": [
+            "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
+        ],
+        "toc": [
+            {
+                "id": "latar-belakang",
+                "label": "1. Latar Belakang & Visi"
+            },
+            {
+                "id": "arsitektur",
+                "label": "2. Arsitektur Sistem & Keputusan Teknis"
+            },
+            {
+                "id": "implementasi-kode",
+                "label": "3. Implementasi Kode (Caching)"
+            },
+            {
+                "id": "fitur-utama",
+                "label": "4. Fitur Utama"
+            },
+            {
+                "id": "dampak",
+                "label": "5. Dampak & Implementasi"
+            }
+        ],
+        "content": [
+            {
+                "type": "heading",
+                "id": "latar-belakang",
+                "text": "Latar Belakang & Visi"
+            },
+            {
+                "type": "paragraph",
+                "text": "Di era digital ini, banyak desa di Indonesia masih pake kertas buat administrasi. Ini bikin pelayanan lambat dan gampang ilang datanya. Makanya, OurCreativity bikin Sistem Desa di awal 2024 buat menuhin kebutuhan software yang gratis, aman, dan gampang dipake sama aparat desa."
+            },
+            {
+                "type": "paragraph",
+                "text": "Visi kita simpel: \"Tiap desa berhak dapet infrastruktur digital kelas dunia, tanpa harus bayar lisensi software yang mahal.\" Lewat open-source, kita mastiin keamanan yang transparan dan ngasih ruang buat inovasi dari komunitas developer lokal."
+            },
+            {
+                "type": "image",
+                "url": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop",
+                "caption": "Tampilan antarmuka dashboard admin Sistem Desa versi 2.0."
+            },
+            {
+                "type": "heading",
+                "id": "arsitektur",
+                "text": "Arsitektur Sistem & Keputusan Teknis"
+            },
+            {
+                "type": "paragraph",
+                "text": "Sistem ini dibangun pake arsitektur monorepo modern. Frontend-nya pake React dan TypeScript biar aman dan responsif. Backend-nya pake Node.js sama Express, nyambung ke database PostgreSQL yang kuat buat nanganin data penduduk yang ribet."
+            },
+            {
+                "type": "quote",
+                "text": "\"Kode yang bagus itu kode yang bisa dibaca dan dikembangin sama siapa aja. Makanya kita milih tech stack yang paling umum dan dokumentasinya lengkap di komunitas.\" - Arif Rahman, Kepala Teknisi."
+            },
+            {
+                "type": "paragraph",
+                "text": "Biar sistemnya selalu nyala dan cepet walau internetnya lemot, kita pake strategi caching agresif pake Redis dan optimasi payload API. Semua infrastrukturnya dibungkus di Docker biar gampang di-deploy di mana aja (on-premise atau cloud)."
+            },
+            {
+                "type": "heading",
+                "id": "implementasi-kode",
+                "text": "Implementasi Kode (Caching)"
+            },
+            {
+                "type": "paragraph",
+                "text": "Ini contoh implementasi service worker dan Redis buat caching data penduduk, biar aplikasinya tetep cepet walau koneksi database lagi lemot:"
+            },
+            {
+                "type": "code",
+                "language": "typescript",
+                "code": "// src/services/population.service.ts\nimport { redis } from '@/lib/redis';\nimport { db } from '@/lib/db';\n\nexport async function getPopulationData(villageId: string) {\n  const cacheKey = `population:${villageId}`;\n  \n  try {\n    // 1. Try fetching from Redis cache first (O(1) time complexity)\n    const cached = await redis.get(cacheKey);\n    if (cached) {\n      console.log('[CACHE HIT] Serving from Redis');\n      return JSON.parse(cached);\n    }\n\n    // 2. Fallback to PostgreSQL database\n    console.log('[CACHE MISS] Querying Database');\n    const data = await db.population.findMany({\n      where: { villageId, status: 'ACTIVE' },\n      include: { familyCard: true }\n    });\n\n    // 3. Set cache with 1 hour TTL (Time To Live)\n    await redis.setex(cacheKey, 3600, JSON.stringify(data));\n    \n    return data;\n  } catch (error) {\n    console.error('Failed to fetch population data:', error);\n    throw new Error('Service Unavailable');\n  }\n}"
+            },
+            {
+                "type": "heading",
+                "id": "fitur-utama",
+                "text": "Fitur Utama"
+            },
+            {
+                "type": "list",
+                "items": [
+                    "Manajemen Data Penduduk (Kelahiran, Kematian, Mutasi) dengan validasi NIK terintegrasi.",
+                    "Pembuatan Surat Keterangan Otomatis (PDF Generator) dengan tanda tangan digital.",
+                    "Sistem Pelaporan Warga Berbasis Web (Pengaduan Masyarakat).",
+                    "Dashboard Statistik Demografi Real-time dengan visualisasi interaktif.",
+                    "Manajemen Anggaran Pendapatan dan Belanja Desa (APBDes) yang transparan.",
+                    "Sistem Informasi Geografis (GIS) untuk pemetaan batas wilayah dan infrastruktur desa."
+                ]
+            },
+            {
+                "type": "heading",
+                "id": "dampak",
+                "text": "Dampak & Implementasi"
+            },
+            {
+                "type": "paragraph",
+                "text": "Semenjak rilis versi stabil pertama (v1.0.0) di pertengahan 2024, Sistem Desa udah dipake sama lebih dari 150 desa di berbagai provinsi. Komunitas open-source juga udah nyumbang lebih dari 500 pull request, benerin bug, dan nambahin fitur bahasa daerah."
+            },
+            {
+                "type": "paragraph",
+                "text": "Dampak nyatanya, waktu buat ngurus surat-surat yang tadinya rata-rata 45 menit sekarang cuma 5 menit per warga. Akurasi data penduduk juga naik drastis berkat sistem validasi otomatis yang nyegah data dobel."
+            }
+        ]
+    },
+    {
+        "id": "02",
+        "title": "OURCREATIVITY HUB",
+        "category": "INTERNAL",
+        "year": "2024",
+        "author": "Internal Team",
+        "version": "v1.1.0",
+        "license": "Proprietary",
+        "repository": "github.com/ourcreativity/hub",
+        "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2000&auto=format&fit=crop",
+        "summary": "Platform internal untuk manajemen proyek dan kolaborasi tim OurCreativity.",
+        "techStack": [
+            "React",
+            "Node.js",
+            "MongoDB",
+            "Tailwind CSS"
+        ],
+        "categories": [
+            "Internal",
+            "Dashboard",
+            "Management"
+        ],
+        "stats": {
+            "stars": "N/A",
+            "forks": "N/A",
+            "contributors": "15",
+            "issues": "2 open"
+        },
+        "gallery": [],
+        "toc": [],
+        "content": [
+            {
+                "type": "paragraph",
+                "text": "Platform ini bersifat internal untuk memudahkan tim OurCreativity mengelola berbagai inisiatif digital secara terpusat."
+            }
+        ]
+    },
+    {
+        "id": "03",
+        "title": "NEXUS API",
+        "category": "SUMBER TERTUTUP",
+        "year": "2026",
+        "author": "Backend Team",
+        "version": "v3.0.0",
+        "license": "Commercial",
+        "repository": "github.com/ourcreativity/nexus-api",
+        "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000&auto=format&fit=crop",
+        "summary": "API Gateway Enterprise untuk menghubungkan berbagai layanan terintegrasi dengan performa tinggi dan keamanan maksimal.",
+        "techStack": [
+            "Go",
+            "Redis",
+            "PostgreSQL",
+            "Kafka"
+        ],
+        "categories": [
+            "API",
+            "Backend",
+            "Enterprise"
+        ],
+        "stats": {
+            "stars": "N/A",
+            "forks": "N/A",
+            "contributors": "8",
+            "issues": "0 open"
+        },
+        "gallery": [],
+        "toc": [],
+        "content": [
+            {
+                "type": "paragraph",
+                "text": "Nexus API dirancang untuk menangani ribuan request per detik dengan latensi sangat rendah. Digunakan oleh beberapa enterprise sebagai backbone infrastruktur mereka."
+            }
+        ]
+    },
+    {
+        "id": "04",
+        "title": "E-LEARNING PLATFORM",
+        "category": "SUMBER TERBUKA",
+        "year": "2025",
+        "author": "EduTech Team",
+        "version": "v1.5.2",
+        "license": "MIT",
+        "repository": "github.com/ourcreativity/e-learning",
+        "image": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=2000&auto=format&fit=crop",
+        "summary": "Platform pembelajaran digital gratis dan terbuka untuk pemerataan pendidikan di area tertinggal.",
+        "techStack": [
+            "Next.js",
+            "Supabase",
+            "Tailwind",
+            "Vercel"
+        ],
+        "categories": [
+            "Education",
+            "Open Source",
+            "Platform"
+        ],
+        "stats": {
+            "stars": "850",
+            "forks": "210",
+            "contributors": "32",
+            "issues": "8 open"
+        },
+        "gallery": [],
+        "toc": [],
+        "content": [
+            {
+                "type": "paragraph",
+                "text": "Platform ini memungkinkan pembuat konten pendidikan mempublikasikan materi yang bisa diakses dengan bandwidth rendah."
+            }
+        ]
+    },
+    {
+        "id": "05",
+        "title": "FINTECH DASHBOARD",
+        "category": "KLIEN",
+        "year": "2024",
+        "author": "Frontend Team",
+        "version": "v1.0.0",
+        "license": "Proprietary",
+        "repository": "N/A",
+        "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop",
+        "summary": "Dashboard analitik finansial real-time yang dibuat khusus untuk klien manajemen aset perbankan.",
+        "techStack": [
+            "React",
+            "D3.js",
+            "TypeScript",
+            "Tailwind"
+        ],
+        "categories": [
+            "Finance",
+            "Client Work",
+            "Dashboard"
+        ],
+        "stats": {
+            "stars": "N/A",
+            "forks": "N/A",
+            "contributors": "5",
+            "issues": "0 open"
+        },
+        "gallery": [],
+        "toc": [],
+        "content": [
+            {
+                "type": "paragraph",
+                "text": "Dibuat berdasarkan spesifikasi khusus dari klien perbankan multinasional. Menonjolkan visualisasi data yang kompleks untuk keputusan investasi real-time."
+            }
+        ]
+    }
+]
