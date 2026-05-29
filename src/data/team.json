@@ -5,18 +5,18 @@
         "id": "01",
         "bio": "Admin OurCreativity sekaligus web developer di balik ourcreativity.id. Membangun dan menjaga ekosistem digital komunitas.",
         "img": "/ardellio.webp",
-        "github": "https://github.com/",
-        "linkedin": "https://linkedin.com/",
-        "twitter": "https://twitter.com/"
+        "github": "https://github.com/ardelyo",
+        "linkedin": "https://linkedin.com/in/ardellio",
+        "twitter": "https://x.com/ardellio"
     },
     {
         "name": "FLORES",
         "role": "ADMIN OURCREATIVITY & BOT CREATOR",
         "id": "02",
         "bio": "Admin OurCreativity sekaligus pencipta Ruby — WhatsApp bot yang membantu ekosistem komunitas OurCreativity berjalan otomatis.",
-        "img": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'><rect width='1' height='1' fill='%230047AB'/></svg>",
-        "github": "https://github.com/",
-        "linkedin": "https://linkedin.com/",
-        "twitter": "https://twitter.com/"
+        "img": "/flores.png",
+        "github": "https://github.com/flores",
+        "linkedin": "https://linkedin.com/in/flores",
+        "twitter": "https://x.com/flores"
     }
 ]

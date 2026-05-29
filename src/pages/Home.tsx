@@ -19,7 +19,14 @@ export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    getProjects().then(all => setFeaturedProjects(all.slice(0, 3)));
+    document.title = "OurCode · Platform Projek OurCreativity";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "OurCode adalah platform showcase proyek dan komunitas developer Indonesia di bawah ekosistem OurCreativity. Temukan solusi digital nyata di sini.");
+    }
+    getProjects()
+      .then(all => setFeaturedProjects(all.slice(0, 3)))
+      .catch(err => console.error("Error loading featured projects:", err));
   }, []);
 
   useEffect(() => {

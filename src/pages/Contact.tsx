@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ArrowRight, MessageCircle, Instagram, ArrowUpRight, Check, Loader, Code2 } from 'lucide-react';
 import { haptics } from '../utils/haptics';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 // Ganti dengan email tim OurCode yang aktif
 const CONTACT_EMAIL = 'kontak@ourcreativity.id';
@@ -9,22 +10,43 @@ const CONTACT_EMAIL = 'kontak@ourcreativity.id';
 export default function Contact() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '', honeypot: '' });
+  const [errors, setErrors] = useState({ name: '', email: '', message: '' });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     haptics.trigger('nudge');
 
     // Validasi custom sebelum kirim
-    if (formData.name.trim().length < 2) {
-      setFormState('error');
-      return;
+    const newErrors = { name: '', email: '', message: '' };
+    let hasError = false;
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nama wajib diisi.';
+      hasError = true;
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Nama minimal harus 2 karakter.';
+      hasError = true;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setFormState('error');
-      return;
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email wajib diisi.';
+      hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Format email tidak valid.';
+      hasError = true;
     }
-    if (formData.message.trim().length < 10) {
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Pesan wajib diisi.';
+      hasError = true;
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Pesan minimal harus 10 karakter.';
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+    if (hasError) {
       setFormState('error');
       return;
     }
@@ -32,29 +54,47 @@ export default function Contact() {
     setFormState('loading');
 
     try {
-      // --- SUPABASE IMPLEMENTATION (aktifkan kalau Supabase sudah dikonfigurasi) ---
-      // const { error } = await supabase.from('contact_submissions').insert({
-      //   name: formData.name,
-      //   email: formData.email,
-      //   message: formData.message,
-      // });
-      // if (error) throw error;
+      if (formData.honeypot) {
+        // Quietly fail/succeed for bots to avoid revealing honeypot detection
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setFormState('success');
+        setFormData({ name: '', email: '', message: '', honeypot: '' });
+        return;
+      }
 
-      // Kirim via mailto (sementara sebelum Supabase)
-      const subject = encodeURIComponent(`[OurCode] Pesan dari ${formData.name}`);
-      const body = encodeURIComponent(
-        `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
-      );
-      window.open(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`, '_blank');
+      if (isSupabaseConfigured) {
+        const { error } = await supabase.from('contact_submissions').insert({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          honeypot: formData.honeypot || null,
+        });
+        if (error) throw error;
+      } else {
+        // Kirim via mailto (sementara sebelum Supabase)
+        const subject = encodeURIComponent(`[OurCode] Pesan dari ${formData.name}`);
+        const body = encodeURIComponent(
+          `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
+        );
+        window.open(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`, '_blank');
+      }
 
       await new Promise(resolve => setTimeout(resolve, 600));
       setFormState('success');
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', message: '', honeypot: '' });
     } catch (err) {
       console.error('Failed to submit contact form:', err);
       setFormState('error');
     }
   };
+
+  useEffect(() => {
+    document.title = "Hubungi Kami · OurCode";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Hubungi tim OurCode untuk kolaborasi proyek, pendaftaran komunitas, atau pertanyaan seputar ekosistem digital OurCreativity.");
+    }
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -201,21 +241,37 @@ export default function Contact() {
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-emerald-500/50"></div>
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-emerald-500/50"></div>
 
-            <form className="w-full flex flex-col gap-12" onSubmit={handleSubmit}>
+            <form className="w-full flex flex-col gap-12" onSubmit={handleSubmit} noValidate>
+              {/* Honeypot Spam Protection Field */}
+              <div className="hidden" aria-hidden="true">
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.honeypot}
+                  onChange={e => setFormData(p => ({ ...p, honeypot: e.target.value }))}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
               <div className="form-element relative">
                 <input
                   type="text"
                   id="name"
                   placeholder=" "
                   value={formData.name}
-                  onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
-                  required
+                  onChange={e => {
+                    setFormData(p => ({ ...p, name: e.target.value }));
+                    if (errors.name) setErrors(p => ({ ...p, name: '' }));
+                  }}
                   disabled={formState === 'loading' || formState === 'success'}
                   className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none disabled:opacity-50"
                 />
                 <label htmlFor="name" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   NAMA KAMU
                 </label>
+                {errors.name && (
+                  <p className="absolute left-0 -bottom-6 font-mono text-xs text-red-500 uppercase tracking-wider">{errors.name}</p>
+                )}
               </div>
 
               <div className="form-element relative">
@@ -224,14 +280,19 @@ export default function Contact() {
                   id="email"
                   placeholder=" "
                   value={formData.email}
-                  onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
-                  required
+                  onChange={e => {
+                    setFormData(p => ({ ...p, email: e.target.value }));
+                    if (errors.email) setErrors(p => ({ ...p, email: '' }));
+                  }}
                   disabled={formState === 'loading' || formState === 'success'}
                   className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer rounded-none disabled:opacity-50"
                 />
                 <label htmlFor="email" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   EMAIL KAMU
                 </label>
+                {errors.email && (
+                  <p className="absolute left-0 -bottom-6 font-mono text-xs text-red-500 uppercase tracking-wider">{errors.email}</p>
+                )}
               </div>
 
               <div className="form-element relative">
@@ -240,18 +301,23 @@ export default function Contact() {
                   rows={4}
                   placeholder=" "
                   value={formData.message}
-                  onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                  required
+                  onChange={e => {
+                    setFormData(p => ({ ...p, message: e.target.value }));
+                    if (errors.message) setErrors(p => ({ ...p, message: '' }));
+                  }}
                   disabled={formState === 'loading' || formState === 'success'}
                   className="w-full bg-transparent border-b-2 border-black/20 dark:border-white/20 py-4 text-2xl md:text-3xl font-black text-black dark:text-white focus:outline-none focus:border-emerald-500 transition-colors peer resize-none rounded-none disabled:opacity-50"
                 ></textarea>
                 <label htmlFor="message" className="absolute left-0 top-4 text-xl md:text-2xl font-black text-black/40 dark:text-white/40 uppercase tracking-tighter peer-focus:-top-6 peer-focus:text-xs peer-focus:text-emerald-500 peer-focus:opacity-100 peer-not-placeholder-shown:-top-6 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:opacity-100 transition-all duration-300 pointer-events-none">
                   PESAN / IDE PROYEK
                 </label>
+                {errors.message && (
+                  <p className="absolute left-0 -bottom-6 font-mono text-xs text-red-500 uppercase tracking-wider">{errors.message}</p>
+                )}
               </div>
 
               {formState === 'error' && (
-                <p className="font-mono text-sm text-red-500 uppercase tracking-widest -mt-6">Gagal kirim. Coba lagi ya!</p>
+                <p className="font-mono text-sm text-red-500 uppercase tracking-widest -mt-6">Validasi gagal atau terjadi kesalahan. Silakan periksa kembali!</p>
               )}
 
               {formState === 'success' && (

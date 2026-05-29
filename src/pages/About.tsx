@@ -46,6 +46,14 @@ export default function About() {
   const [activeValue, setActiveValue] = useState(0);
 
   useEffect(() => {
+    document.title = "Tentang Kami · OurCode";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Pelajari manifesto, visi, dan cara kerja tim developer OurCode di bawah naungan ekosistem OurCreativity.");
+    }
+  }, []);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Hero Text Animation
       gsap.from('.hero-char', {

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Terminal } from 'lucide-react';
 import { haptics } from '../utils/haptics';
 
 export default function NotFound() {
+    useEffect(() => {
+        document.title = "404 Halaman Tidak Ditemukan · OurCode";
+    }, []);
+
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#1A1A1A] text-white overflow-hidden relative px-4">
 

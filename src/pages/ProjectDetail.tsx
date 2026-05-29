@@ -21,6 +21,7 @@ export default function ProjectDetail() {
   const heroTextRef = useRef<HTMLHeadingElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function ProjectDetail() {
   useEffect(() => {
     async function loadProject() {
       try {
-        const data = await getProjectById(id || '01');
+        const data = await getProjectById(id ?? '');
         setProject(data);
       } catch (error) {
         console.error("Failed to load project:", error);
@@ -38,6 +39,28 @@ export default function ProjectDetail() {
     }
     loadProject();
   }, [id]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (project) {
+      document.title = `${project.title} · OurCode`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute("content", project.summary || `Detail proyek ${project.title} buatan tim OurCreativity.`);
+      }
+    }
+  }, [project]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -470,7 +493,13 @@ export default function ProjectDetail() {
                   </button>
                 </div>
 
-                <a href="#" onClick={() => haptics.trigger(50)} className="w-full bg-emerald-600 text-white py-5 px-8 font-bold text-lg uppercase tracking-widest flex items-center justify-between hover:bg-emerald-700 transition-colors group relative overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <a 
+                  href={project.repository ? (project.repository.startsWith('http') ? project.repository : `https://${project.repository}`) : '#'} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  onClick={() => haptics.trigger(50)} 
+                  className="w-full bg-emerald-600 text-white py-5 px-8 font-bold text-lg uppercase tracking-widest flex items-center justify-between hover:bg-emerald-700 transition-colors group relative overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                >
                   <span className="relative z-10">Kunjungi Website</span>
                   <ExternalLink size={20} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   <div className="absolute inset-0 bg-black/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
@@ -501,7 +530,7 @@ export default function ProjectDetail() {
                 {/* Overlay info */}
                 <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                   <span className="font-mono text-sm uppercase tracking-widest text-emerald-500">Tangkapan Layar 0{i + 1}</span>
-                  <h3 className="font-bold text-2xl mt-2">Antarmuka Sistem Desa</h3>
+                  <h3 className="font-bold text-2xl mt-2">{project.title}</h3>
                 </div>
               </div>
             </div>
@@ -512,12 +541,26 @@ export default function ProjectDetail() {
       {/* Next Project Teaser */}
       <div className="w-full py-32 flex justify-center items-center mt-16">
         <Link to="/projects" onClick={() => haptics.trigger(50)} className="group flex flex-col items-center text-center">
-          <span className="font-mono text-sm uppercase tracking-widest opacity-50 mb-4">Proyek Selanjutnya</span>
+          <span className="font-mono text-sm uppercase tracking-widest opacity-50 mb-4">Eksplorasi Karya Lain</span>
           <h2 className="font-black text-5xl md:text-8xl tracking-tighter uppercase group-hover:text-emerald-600 transition-colors duration-300 flex items-center gap-4">
-            NEXUS API <ArrowRight size={48} className="group-hover:translate-x-4 transition-transform duration-300" />
+            SEMUA PROYEK <ArrowRight size={48} className="group-hover:translate-x-4 transition-transform duration-300" />
           </h2>
         </Link>
       </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => {
+            haptics.trigger(50);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="fixed bottom-8 right-8 z-40 p-4 rounded-sm border-2 border-black dark:border-white/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F0] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 hover:-translate-x-1 transition-all duration-300 hover:text-emerald-600 dark:hover:text-emerald-400 group animate-fade-in"
+          aria-label="Back to Top"
+        >
+          <ArrowRight size={24} className="-rotate-90 group-hover:-translate-y-1 transition-transform" />
+        </button>
+      )}
 
     </div>
   );

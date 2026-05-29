@@ -23,6 +23,14 @@ export default function Team() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    document.title = "Tim Developer · OurCode";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", "Kenali sang arsitek di balik barisan kode proyek-proyek inovatif di OurCode.");
+    }
+  }, []);
+
+  useEffect(() => {
     const ctx = gsap.context(() => {
       // Hero Text Reveal
       gsap.from('.hero-line-inner', {

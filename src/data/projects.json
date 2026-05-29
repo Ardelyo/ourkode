@@ -168,12 +168,56 @@
             "contributors": "15",
             "issues": "2 open"
         },
-        "gallery": [],
-        "toc": [],
+        "gallery": [
+            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200&auto=format&fit=crop"
+        ],
+        "toc": [
+            {
+                "id": "latar-belakang",
+                "label": "1. Latar Belakang & Kebutuhan"
+            },
+            {
+                "id": "arsitektur",
+                "label": "2. Arsitektur & Teknologi"
+            },
+            {
+                "id": "fitur-kolaborasi",
+                "label": "3. Fitur Kolaborasi Utama"
+            }
+        ],
         "content": [
             {
+                "type": "heading",
+                "id": "latar-belakang",
+                "text": "Latar Belakang & Kebutuhan"
+            },
+            {
                 "type": "paragraph",
-                "text": "Platform ini bersifat internal untuk memudahkan tim OurCreativity mengelola berbagai inisiatif digital secara terpusat."
+                "text": "Seiring bertambahnya anggota dan proyek di ekosistem OurCreativity, koordinasi lewat chat grup dirasa kurang terstruktur. Oleh karena itu, tim merancang OurCreativity Hub sebagai portal internal satu pintu untuk mengelola workflow, repositori, dan dokumentasi teknis secara efisien."
+            },
+            {
+                "type": "heading",
+                "id": "arsitektur",
+                "text": "Arsitektur & Teknologi"
+            },
+            {
+                "type": "paragraph",
+                "text": "Aplikasi ini menggunakan MERN stack (MongoDB, Express, React, Node.js) yang ringan namun powerful. Tailwind CSS digunakan untuk merancang antarmuka panel admin yang minimalis dan ramah pengguna dengan performa rendering cepat."
+            },
+            {
+                "type": "heading",
+                "id": "fitur-kolaborasi",
+                "text": "Fitur Kolaborasi Utama"
+            },
+            {
+                "type": "list",
+                "items": [
+                    "Manajemen tugas kanban board terintegrasi untuk pembagian tugas developer.",
+                    "Sistem wiki internal untuk menyimpan dokumentasi API dan standard operating procedure (SOP).",
+                    "Monitoring repositori Git dan status integrasi berkelanjutan (CI/CD) secara langsung.",
+                    "Kalender bersama untuk koordinasi jadwal rilis proyek dan agenda demo day."
+                ]
             }
         ]
     },
@@ -205,12 +249,56 @@
             "contributors": "8",
             "issues": "0 open"
         },
-        "gallery": [],
-        "toc": [],
+        "gallery": [
+            "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop"
+        ],
+        "toc": [
+            {
+                "id": "skala-enterprise",
+                "label": "1. Skala Enterprise & Kebutuhan Bisnis"
+            },
+            {
+                "id": "performa-tinggi",
+                "label": "2. Performa Tinggi & Go Concurrency"
+            },
+            {
+                "id": "fitur-keamanan",
+                "label": "3. Keamanan & Fitur Utama"
+            }
+        ],
         "content": [
             {
+                "type": "heading",
+                "id": "skala-enterprise",
+                "text": "Skala Enterprise & Kebutuhan Bisnis"
+            },
+            {
                 "type": "paragraph",
-                "text": "Nexus API dirancang untuk menangani ribuan request per detik dengan latensi sangat rendah. Digunakan oleh beberapa enterprise sebagai backbone infrastruktur mereka."
+                "text": "Dengan berkembangnya ekosistem microservices pada klien komersial kami, dibutuhkan satu gerbang utama (API Gateway) yang aman dan mampu mengarahkan lalu lintas data dalam volume sangat besar tanpa mengorbankan kecepatan."
+            },
+            {
+                "type": "heading",
+                "id": "performa-tinggi",
+                "text": "Performa Tinggi & Go Concurrency"
+            },
+            {
+                "type": "paragraph",
+                "text": "Nexus API dibangun menggunakan bahasa pemrograman Go (Golang) untuk memaksimalkan efisiensi memory footprint dan pemanfaatan konkurensi (Goroutines). Sistem ini dibantu oleh Redis sebagai cache layer dan Apache Kafka untuk menangani stream antrean data log secara asinkronus."
+            },
+            {
+                "type": "heading",
+                "id": "fitur-keamanan",
+                "text": "Keamanan & Fitur Utama"
+            },
+            {
+                "type": "list",
+                "items": [
+                    "Dynamic Rate Limiting menggunakan algoritma token bucket.",
+                    "Autentikasi terpusat berbasis JSON Web Token (JWT) dengan OAuth2 fallback.",
+                    "Automatic API Documentation generator via OpenAPI/Swagger.",
+                    "Sistem load balancing bawaan dengan deteksi kegagalan server otomatis."
+                ]
             }
         ]
     },
@@ -242,12 +330,56 @@
             "contributors": "32",
             "issues": "8 open"
         },
-        "gallery": [],
-        "toc": [],
+        "gallery": [
+            "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1200&auto=format&fit=crop"
+        ],
+        "toc": [
+            {
+                "id": "misi-pendidikan",
+                "label": "1. Misi Sosial & Pemerataan Akses"
+            },
+            {
+                "id": "arsitektur-modern",
+                "label": "2. Arsitektur Modern Supabase & Next.js"
+            },
+            {
+                "id": "fitur-interaktif",
+                "label": "3. Fitur Interaktif"
+            }
+        ],
         "content": [
             {
+                "type": "heading",
+                "id": "misi-pendidikan",
+                "text": "Misi Sosial & Pemerataan Akses"
+            },
+            {
                 "type": "paragraph",
-                "text": "Platform ini memungkinkan pembuat konten pendidikan mempublikasikan materi yang bisa diakses dengan bandwidth rendah."
+                "text": "Akses pendidikan berkualitas di wilayah 3T (Tertinggal, Terdepan, dan Terluar) seringkali terhambat oleh keterbatasan koneksi internet dan perangkat keras. Platform E-Learning ini didesain agar sangat ringan, dapat diakses secara offline, dan menggunakan konsumsi bandwidth sehemat mungkin."
+            },
+            {
+                "type": "heading",
+                "id": "arsitektur-modern",
+                "text": "Arsitektur Modern Supabase & Next.js"
+            },
+            {
+                "type": "paragraph",
+                "text": "Kami menggunakan Next.js dengan optimasi Static Site Generation (SSG) dan Incremental Static Regeneration (ISR). Hal ini memungkinkan ribuan halaman modul pembelajaran dimuat hampir instan. Database dan Autentikasi didukung penuh oleh Supabase."
+            },
+            {
+                "type": "heading",
+                "id": "fitur-interaktif",
+                "text": "Fitur Interaktif"
+            },
+            {
+                "type": "list",
+                "items": [
+                    "Akses modul pembelajaran video berukuran kecil dan teks teroptimasi.",
+                    "Sistem kuis interaktif dengan umpan balik langsung.",
+                    "Dashboard pencapaian belajar siswa dengan grafik kemajuan belajar.",
+                    "Mode hemat data dan kemampuan download materi untuk dipelajari secara offline."
+                ]
             }
         ]
     },
@@ -279,12 +411,56 @@
             "contributors": "5",
             "issues": "0 open"
         },
-        "gallery": [],
-        "toc": [],
+        "gallery": [
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1543286386-7a38112d7d6e?q=80&w=1200&auto=format&fit=crop"
+        ],
+        "toc": [
+            {
+                "id": "kebutuhan-analitik",
+                "label": "1. Kebutuhan Analitik Finansial"
+            },
+            {
+                "id": "visualisasi-d3",
+                "label": "2. Kekuatan Visualisasi D3.js & React"
+            },
+            {
+                "id": "fitur-dashboard",
+                "label": "3. Fitur Utama Analisis"
+            }
+        ],
         "content": [
             {
+                "type": "heading",
+                "id": "kebutuhan-analitik",
+                "text": "Kebutuhan Analitik Finansial"
+            },
+            {
                 "type": "paragraph",
-                "text": "Dibuat berdasarkan spesifikasi khusus dari klien perbankan multinasional. Menonjolkan visualisasi data yang kompleks untuk keputusan investasi real-time."
+                "text": "Klien kami di sektor manajemen aset membutuhkan cara cepat untuk melacak alokasi portofolio investasi global, memantau tren pergerakan pasar secara real-time, dan membuat keputusan investasi berskala besar dalam hitungan detik."
+            },
+            {
+                "type": "heading",
+                "id": "visualisasi-d3",
+                "text": "Kekuatan Visualisasi D3.js & React"
+            },
+            {
+                "type": "paragraph",
+                "text": "Dashboard ini menggabungkan fleksibilitas React dengan kekuatan rendering visualisasi D3.js. Grafik candlestick, diagram alokasi, serta grafik deret waktu (time-series) dapat melakukan kalkulasi dan render ulang secara real-time saat data baru masuk via WebSockets."
+            },
+            {
+                "type": "heading",
+                "id": "fitur-dashboard",
+                "text": "Fitur Utama Analisis"
+            },
+            {
+                "type": "list",
+                "items": [
+                    "Bagan analisis portofolio dinamis dengan visualisasi alokasi aset sektoral.",
+                    "Sistem peringatan real-time untuk fluktuasi pasar ekstrem.",
+                    "Ekspor laporan komprehensif dalam format PDF dan lembar kerja Excel sekali klik.",
+                    "Simulasi skenario stres testing portofolio berbasis data historis."
+                ]
             }
         ]
     }
