@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -167,13 +167,17 @@ export default function ProjectDetail() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (isLoading || !project) {
+  if (isLoading) {
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#1A1A1A] text-white">
         <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="font-mono text-sm uppercase tracking-widest opacity-50">Memuat Detail Proyek...</p>
       </div>
     );
+  }
+
+  if (!project) {
+    return <Navigate to="/projects" replace />;
   }
 
   return (

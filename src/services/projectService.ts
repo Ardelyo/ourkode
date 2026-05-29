@@ -45,12 +45,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
     return new Promise((resolve) => {
         setTimeout(() => {
             const project = (projectsData as Project[]).find(p => p.id === id);
-            // Fallback to '01' if id not found (to maintain previous behavior)
-            if (!project) {
-                resolve((projectsData as Project[]).find(p => p.id === '01') || null);
-            } else {
-                resolve(project);
-            }
+            resolve(project || null);
         }, 500);
     });
 }

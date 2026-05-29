@@ -3,6 +3,9 @@ import gsap from 'gsap';
 import { ArrowRight, MessageCircle, Instagram, ArrowUpRight, Check, Loader, Code2 } from 'lucide-react';
 import { haptics } from '../utils/haptics';
 
+// Ganti dengan email tim OurCode yang aktif
+const CONTACT_EMAIL = 'kontak@ourcreativity.id';
+
 export default function Contact() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -11,10 +14,25 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     haptics.trigger('nudge');
+
+    // Validasi custom sebelum kirim
+    if (formData.name.trim().length < 2) {
+      setFormState('error');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setFormState('error');
+      return;
+    }
+    if (formData.message.trim().length < 10) {
+      setFormState('error');
+      return;
+    }
+
     setFormState('loading');
 
     try {
-      // --- SUPABASE IMPLEMENTATION (activate when Supabase is connected) ---
+      // --- SUPABASE IMPLEMENTATION (aktifkan kalau Supabase sudah dikonfigurasi) ---
       // const { error } = await supabase.from('contact_submissions').insert({
       //   name: formData.name,
       //   email: formData.email,
@@ -22,8 +40,14 @@ export default function Contact() {
       // });
       // if (error) throw error;
 
-      // Simulate a network request for now
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      // Kirim via mailto (sementara sebelum Supabase)
+      const subject = encodeURIComponent(`[OurCode] Pesan dari ${formData.name}`);
+      const body = encodeURIComponent(
+        `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
+      );
+      window.open(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`, '_blank');
+
+      await new Promise(resolve => setTimeout(resolve, 600));
       setFormState('success');
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {

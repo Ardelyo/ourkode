@@ -117,8 +117,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         <img src="/logo.webp" alt="OurCreativity" className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
         <div className="hidden md:flex flex-col text-[#1A1A1A] dark:text-[#F5F5F0]">
-          <span className="font-black text-sm tracking-tighter leading-none uppercase">OurCreativity</span>
-          <span className="font-mono text-[9px] tracking-widest opacity-70 uppercase mt-1">Edisi Koding</span>
+          <span className="font-black text-sm tracking-tighter leading-none uppercase">OurCode</span>
+          <span className="font-mono text-[9px] tracking-widest opacity-70 uppercase mt-1">ourcreativity.id</span>
         </div>
       </Link>
 
